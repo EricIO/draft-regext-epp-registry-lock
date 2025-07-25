@@ -2,7 +2,16 @@
 title: Registry Lock Extension for the Extensible Provisioning Protocol (EPP)
 abbrev: EPP Registry Lock
 docname: draft-ietf-regext-registry-lock-latest
+cat: std
+ipr: trust200902
 date: {DATE}
+
+author:
+-
+    ins: E. Skoglund
+    name: Eric Skoglund
+    organization: The Swedish Internet Foundation
+    email: eric.skoglund@internetstiftelsen.se
 
 normative:
 
@@ -70,47 +79,118 @@ indicate that the transform is awaiting authorization to be completed.
 If a transform command is authorized within the specified deadline a
 server MUST send a poll message indicating the successfull transform.
 
+Example poll message indicating success:
+
+~~~~~~~~~~
+S:<?xml version="1.0" encoding="UTF-8"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:      <result code="1301">
+S:         <msg lang="en-US">
+S:             Command completed successfully; ack to dequeue
+S:         </msg>
+S:      </result>
+S:      <msgQ id="201" count="1">
+S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
+S:         <msg>Update of locked domain succeeded.</msg>
+S:      </msgQ>
+S:    <resData>
+S:    <extension>
+S:      <regLock:pollInfo xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:        <regLock:domain>example.com</regLock:domain>
+S:        <regLock:operation success="true">update</regLock:operation>
+S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
+S:        <regLock:approvedBy>
+S:          <regLock:contact>
+S:             <regLock:id>rl01</regLock:id>
+S:          </regLock:contact>
+S:        </regLock:approvedBy>
+S:      </regLock:pollInfo>
+S:    </extension>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>54321-XYZ</svTRID>
+S:    </trID>
+S:   </response>
+S:</epp>
+~~~~~~~~~~
+
 If a transform is not authorized within the deadline a server MUST send
 a poll message indicating the failure of the transform.
+
+Example poll message indicating success:
+
+~~~~~~~~~~
+S:<?xml version="1.0" encoding="UTF-8"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:      <result code="1301">
+S:         <msg lang="en-US">
+S:             Command completed successfully; ack to dequeue
+S:         </msg>
+S:      </result>
+S:      <msgQ id="201" count="1">
+S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
+S:         <msg>Update of locked domain failed.</msg>
+S:      </msgQ>
+S:    <resData>
+S:    <extension>
+S:      <regLock:pollInfo xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:        <regLock:domain>example.com</regLock:domain>
+S:        <regLock:operation success="false">update</regLock:operation>
+S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
+S:        </regLock:approvedBy>
+S:      </regLock:pollInfo>
+S:    </extension>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>54321-XYZ</svTRID>
+S:    </trID>
+S:   </response>
+S:</epp>
+~~~~~~~~~~
 
 ## Extension Elements
 
 This extension adds additional elements to the EPP domain mapping.
 
-### The <regLock:policy> element
+### The `<regLock:policy>` element
 
-The <regLock:policy> element contains the following elements:
+The `<regLock:policy>` element contains the following elements:
 
-- One OPTIONAL <regLock:timeout> element that contains the timeout for which
-  after any <domain:update> operation will fail.
-- One OPTIONAL <regLock:quorom> element that contains a positive non-zero integer
+- One OPTIONAL `<regLock:timeout>` element that contains the timeout for which
+  after any `<domain:update>` operation will fail. A server MAY restrict the allowed
+  values.
+- One OPTIONAL `<regLock:quorom>` element that contains a positive non-zero integer
   that sets the number of registy lock contacts that MUST authorize the domain
-  changes for it to be approved.
+  changes for it to be approved. A server MAY restrict the number of registry lock
+  contacts a domain object can have.
 
-### The <regLock:contact> element
+### The `<regLock:contact>` element
 
-The <regLock:contact> element contains the following elements:
+The `<regLock:contact>` element contains the following elements:
 
-- <regLock:contactID> the contact identifier
-- <regLock:method> the method used by the registry lock contact to authorize changes
+- `<regLock:contactID>` the contact identifier
+- An OPTIONAL `<regLock:method>` the method used by the registry lock contact to authorize changes
 
 ## EPP Command Mapping
 
 ### EPP Query Commands
 
-#### EPP <check> Command
+#### EPP `<check>` Command
 
-This extension does not add any elements to the EPP <check> command
-or <check> response described in the EPP domain mapping {{!RFC5731}}.
+This extension does not add any elements to the EPP `<check>` command
+or `<check>` response described in the EPP domain mapping {{!RFC5731}}.
 
-#### EPP <info> Command
+#### EPP `<info>` Command
 
-This extension does not add any elements to the EPP <info> command
+This extension does not add any elements to the EPP `<info>` command
 described in the EPP domain mapping {{!RFC5731}}.  However, additional
-elements are defined for the <info> response.
+elements are defined for the `<info>` response.
 
-An example <info> response for a domain object with no pending updates:
+An example `<info>` response for a domain object with no pending updates:
 
+~~~~~~~~~~
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
 S:     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -170,9 +250,11 @@ S:      <svTRID>54322-XYZ</svTRID>
 S:    </trID>
 S:  </response>
 S:</epp>
+~~~~~~~~~~
 
-An example <info> response for a domain with pending updates:
+An example `<info>` response for a domain with pending updates:
 
+~~~~~~~~~~
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
 S:     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -239,28 +321,29 @@ S:      <svTRID>54322-XYZ</svTRID>
 S:    </trID>
 S:  </response>
 S:</epp>
+~~~~~~~~~~
 
-### EPP <transfer> Command
+### EPP `<transfer>` Command
 
-This extension does not add any elements to the EPP <transfer>
-command described in the EPP domain mapping {{!RFC5731}}.  However,
-additional elements are defined for the <transfer> response.
-
+This extension does not add any elements to the EPP `<transfer>`
+command or `<transfer>` responses as described in the EPP domain
+mapping {{!RFC5731}}.
 
 ### EPP Transform Commands
 
-EPP provides five commands to transform objects: <create> to create
-an instance of an object, <delete> to delete an instance of an
-object, <renew> to extend the validity period of an object,
-<transfer> to manage object sponsorship changes, and <update> to
+EPP provides five commands to transform objects: `<create>` to create
+an instance of an object, `<delete>` to delete an instance of an
+object, `<renew>` to extend the validity period of an object,
+`<transfer>` to manage object sponsorship changes, and `<update>` to
 change information associated with an object.
 
-#### EPP <create> Command
+#### EPP `<create>` Command
 
-This extension defines additional elements for the EPP <create>
+This extension defines additional elements for the EPP `<create>`
 command described in the EPP domain mapping {{!RFC5731}}.  No additional
-elements are defined for the EPP <create> response.
+elements are defined for the EPP `<create>` response.
 
+~~~~~~~~~~
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:  <command>
@@ -292,33 +375,53 @@ C:    </extension>
 C:    <clTRID>ABC-12345</clTRID>
 C:  </command>
 C:</epp>
+~~~~~~~~~~
 
-#### EPP <delete> Command
+#### EPP `<delete>` Command
 
 This extension does not define any additional elements to the
-EPP <delete> command or <delete> responses described in the EPP
+EPP `<delete>` command or `<delete>` responses described in the EPP
 domain mapping {{!RFC5731}}.  However if a server recieves a
-<delete> coomand for a domain object with registry lock set it
+`<delete>` command for a domain object with registry lock set it
 MUST be rejected.
 
-#### EPP <renew> Command
+#### EPP `<renew>` Command
 
 This extension does not define any additional elements to the
-EPP <renew> command or <renew> responses described in the EPP
+EPP `<renew>` command or `<renew>` responses described in the EPP
 domain mapping {{!RFC5731}}.
 
-#### EPP <transfer> Command
+#### EPP `<transfer>` Command
 
 This extension does not define any additional elements to the
-EPP <transfer> command or <transfer> responses described in
+EPP `<transfer>` command or `<transfer>` responses described in
 the EPP domain mapping {{!RFC5731}}.
 
-#### EPP <update> Command
+#### EPP `<update>` Command
 
-This extension defines additional elements for the EPP <update>
+This extension defines additional elements for the EPP `<update>`
 command described in the EPP domain mapping {{!RFC5731}}.  No additional
-elements are defined for the EPP <update> response.
+elements are defined for the EPP `<update>` response.
 
+The EPP `<update>` command provides a transform operation that allows a
+client to modify the attributes of a domain object.  In addition to
+the EPP command elements described in the EPP domain mapping, the
+command MUST contain an `<extension>` element, and the `<extension>`
+element MUST contain a child `<regLock:update>` element that identifies
+the extension namespace if the client wants to update the domain
+object with data defined in this extension.  The `<regLock:update>`
+element contains a `<regLock:add>` to add registry lock contacts to
+a domain, a `<regLock:rem>` to remove registry lock contacts from a domain,
+or a `<regLock:chg>` element to change policy information or a registry lock
+contacts authorization method. At least one `<regLock:add>`, `<regLock:rem>`,
+or `<regLock:chg>` element MUST be provided.
+
+A `<regLock:add>` or `<regLock:rem>` MUST only contain `<regLock:contact>` elements
+as child elements.
+
+An example update command changing policy data:
+
+~~~~~~~~~~
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
 C:     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -342,7 +445,11 @@ C:    </extension>
 C:    <clTRID>ABC-12345</clTRID>
 C:  </command>
 C:</epp>
+~~~~~~~~~~
 
+An example update command adding and removing registry lock contacts:
+
+~~~~~~~~~~
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
 C:     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -376,5 +483,6 @@ C:    </extension>
 C:    <clTRID>ABC-12345</clTRID>
 C:  </command>
 C:</epp>
+~~~~~~~~~~
 
 ## Formal Syntax
