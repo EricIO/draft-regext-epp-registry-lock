@@ -242,7 +242,7 @@ S:            <regLock:id>rl1002</regLock:id>
 S:            <regLock:method>email</regLock:method>
 S:          </regLock:contact>
 S:        </regLock:contactData>
-S:      </secDNS:infData>
+S:      </regLock:infData>
 S:    </extension>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
@@ -313,7 +313,7 @@ S:             <regLock:contactID approved=1>rl1001</regLock:contactID>
 S:             <regLock:contactID approved=0>rl1002</regLock:contactID>
 S:           </regLock:update>
 S:        </regLock:updateData>
-S:      </secDNS:infData>
+S:      </regLock:infData>
 S:    </extension>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
@@ -433,7 +433,7 @@ C:        <domain:name>example.com</domain:name>
 C:      </domain:update>
 C:    </update>
 C:    <extension>
-C:      <secDNS:update
+C:      <regLock:update
 C:       xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
 C:        <regLock:chg>
 C:          <regLock:policyData>
@@ -461,7 +461,7 @@ C:        <domain:name>example.com</domain:name>
 C:      </domain:update>
 C:    </update>
 C:    <extension>
-C:      <secDNS:update
+C:      <regLock:update
 C:       xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
 C:        <regLock:add>
 C:          <regLock:contact>
