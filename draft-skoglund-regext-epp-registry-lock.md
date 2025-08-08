@@ -63,13 +63,17 @@ registrars to automate the registry lock process.
 
 ### Registry Lock Contact
 
-A registry lock contact is a contact connected with a domain object that
-is able to authorize changes to the object.
+
+A registry lock contact is a contact connected with a domain object that is able to authorize changes to the object.
+Multiple registry lock contacts may exist for a domain. 
+In this case changes MAY need to be authorized by more than one registry lock contact.
+
 
 ### Status Values for Locked Domains
 
 Once a registry lock has been applied on a domain object the object
-MUST have the serverDeleteProhibited status value set on it.
+MUST have the serverDeleteProhibited and the serverTransferProhibited status value set on it.
+In addition the domain object MAY has a serverUpdateProhibited status value set on it.
 
 ### Handling changes to a locked domain
 
@@ -165,13 +169,21 @@ The `<regLock:policy>` element contains the following elements:
   that sets the number of registy lock contacts that MUST authorize the domain
   changes for it to be approved. A server MAY restrict the number of registry lock
   contacts a domain object can have.
+  If more than one registry lock contact is set for a domain than `<regLock:quorom>` MUST be set
 
 ### The `<regLock:contact>` element
 
 The `<regLock:contact>` element contains the following elements:
 
 - `<regLock:contactID>` the contact identifier
-- An OPTIONAL `<regLock:method>` the method used by the registry lock contact to authorize changes
+- `<regLock:method>` the method(s) used by the registry lock contact to authorize changes. This can be on of the following methods
+- email
+- text message (not limited to classic text message but also including messages to messenger services)
+- letter
+- phone
+- token (may either be a TOTP or another form of token)
+Multiple methods can be set for a registry lock contact. 
+
 
 ## EPP Command Mapping
 
@@ -242,7 +254,7 @@ S:            <regLock:id>rl1002</regLock:id>
 S:            <regLock:method>email</regLock:method>
 S:          </regLock:contact>
 S:        </regLock:contactData>
-S:      </secDNS:infData>
+S:      </regLock:infData>
 S:    </extension>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
@@ -313,7 +325,7 @@ S:             <regLock:contactID approved=1>rl1001</regLock:contactID>
 S:             <regLock:contactID approved=0>rl1002</regLock:contactID>
 S:           </regLock:update>
 S:        </regLock:updateData>
-S:      </secDNS:infData>
+S:      </regLock:infData>
 S:    </extension>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
@@ -328,6 +340,7 @@ S:</epp>
 This extension does not add any elements to the EPP `<transfer>`
 command or `<transfer>` responses as described in the EPP domain
 mapping {{!RFC5731}}.
+A domain with registry lock MUST have a serverTransferProhibited status set on it.
 
 ### EPP Transform Commands
 
@@ -433,7 +446,7 @@ C:        <domain:name>example.com</domain:name>
 C:      </domain:update>
 C:    </update>
 C:    <extension>
-C:      <secDNS:update
+C:      <regLock:update
 C:       xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
 C:        <regLock:chg>
 C:          <regLock:policyData>
@@ -461,7 +474,7 @@ C:        <domain:name>example.com</domain:name>
 C:      </domain:update>
 C:    </update>
 C:    <extension>
-C:      <secDNS:update
+C:      <regLock:update
 C:       xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
 C:        <regLock:add>
 C:          <regLock:contact>
