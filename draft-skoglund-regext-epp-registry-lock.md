@@ -59,17 +59,24 @@ registrant ensures that any changes (except for renewing the domain) are
 verified by the registry before going into effect.
 
 In this document, we define an EPP extension that enables registries and
-registrars to automate the registry lock process.
+registrars to further automate the registry lock process.
 
 ### Registry Lock Contact
 
-A registry lock contact is a contact connected with a domain object that
-is able to authorize changes to the object.
+A registry lock contact is a contact connected to a domain object that
+is able to authorize changes to the object. A domain MAY have multiple
+registry lock contacts, in which case changes MAY need to be authorized
+by multiple registry lock contacts. A server MAY restrict the maximum
+number of registry lock contacts connected to a domain.
+
+TODO: Should registry lock contacts also be protected and not able to be updated/deleted?
 
 ### Status Values for Locked Domains
 
 Once a registry lock has been applied on a domain object the object
 MUST have the serverDeleteProhibited status value set on it.
+
+TODO: Decide if any other statuses need to be set
 
 ### Handling changes to a locked domain
 
@@ -168,8 +175,21 @@ The `<regLock:policy>` element contains the following elements:
 
 The `<regLock:contact>` element contains the following elements:
 
-- `<regLock:contactID>` the contact identifier
-- An OPTIONAL `<regLock:method>` the method used by the registry lock contact to authorize changes
+- `<regLock:contactID>` the contact identifier.
+- An OPTIONAL `<regLock:method>` the method used by the registry lock contact to
+  authorize changes. A server MAY restrict the allowed values.
+
+#### Well known `<regLock:method>` values
+
+A server MAY allow any value for the `<regLock:method>` element the following
+values have a well known definition:
+
+- email  - The contact will receive an email with further instructions.
+- text   - The contact will receive a text message with further instructions.
+- letter - The contact will receive a postal letter with further instructions.
+- phone  - The contact will receive a phone call with further instructions.
+- token  - The contact will be provided means to send a token to the server for
+           authorizing changes.
 
 ## EPP Command Mapping
 
