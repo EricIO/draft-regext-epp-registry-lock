@@ -95,8 +95,7 @@ S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
 S:         <msg>Update of locked domain succeeded.</msg>
 S:      </msgQ>
 S:    <resData>
-S:    <extension>
-S:      <regLock:pollInfo xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:      <regLock:infData xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
 S:        <regLock:domain>example.com</regLock:domain>
 S:        <regLock:operation success="true">update</regLock:operation>
 S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
@@ -106,7 +105,7 @@ S:             <regLock:id>rl01</regLock:id>
 S:          </regLock:contact>
 S:        </regLock:approvedBy>
 S:      </regLock:pollInfo>
-S:    </extension>
+S:    </resData>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>54321-XYZ</svTRID>
@@ -134,14 +133,13 @@ S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
 S:         <msg>Update of locked domain failed.</msg>
 S:      </msgQ>
 S:    <resData>
-S:    <extension>
-S:      <regLock:pollInfo xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:      <regLock:infData xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
 S:        <regLock:domain>example.com</regLock:domain>
 S:        <regLock:operation success="false">update</regLock:operation>
 S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
 S:        </regLock:approvedBy>
 S:      </regLock:pollInfo>
-S:    </extension>
+S:    </resData>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>54321-XYZ</svTRID>
@@ -325,9 +323,8 @@ S:</epp>
 
 ### EPP `<transfer>` Command
 
-This extension does not add any elements to the EPP `<transfer>`
-command or `<transfer>` responses as described in the EPP domain
-mapping {{!RFC5731}}.
+This extension does not add any elements to the EPP `<transfer>` command
+or `<transfer>` responses as described in the EPP domain mapping {{!RFC5731}}.
 
 ### EPP Transform Commands
 
@@ -416,8 +413,8 @@ or a `<regLock:chg>` element to change policy information or a registry lock
 contacts authorization method. At least one `<regLock:add>`, `<regLock:rem>`,
 or `<regLock:chg>` element MUST be provided.
 
-A `<regLock:add>` or `<regLock:rem>` MUST only contain `<regLock:contact>` elements
-as child elements.
+A `<regLock:add>` or `<regLock:rem>` MUST only contain `<regLock:contact>`
+elements as child elements.
 
 An example update command changing policy data:
 
