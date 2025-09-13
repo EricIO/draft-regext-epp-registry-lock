@@ -56,7 +56,16 @@ this protocol.
 Many registries provide registrants for a way to add protection to their
 domains by locking them at the registry level.  By locking a domain a
 registrant ensures that any changes (except for renewing the domain) are
-verified by the registry before going into effect.
+verified by the registry before going into effect.  As of yet there have
+been no standardized process for for a registry lock and registries that
+provide it have come up with different processes, most including some
+level of manual intervention.
+
+
+While a domain that has registry lock enabled on it needs authorization
+for any changes made to it a registry MAY allow changes bypassing the
+authorization via automated DNSSEC provisioning, for example using
+a CDSS/CSYNC scanner.
 
 In this document, we define an EPP extension that enables registries and
 registrars to further automate the registry lock process.
@@ -503,3 +512,5 @@ C:</epp>
 ~~~~~~~~~~
 
 ## Formal Syntax
+
+TBD
