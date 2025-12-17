@@ -83,6 +83,161 @@ Once a registry lock has been applied on a domain object the object
 MUST have the serverDeleteProhibited status value set on it. Additionally
 a new status value of domainLocked MUST be set on the domain object.
 
+### Adding a registry lock to a domain
+
+When a registry lock is set on a domain a server MUST respond with a result
+code oc 1001 as defined in section 3 of {{!RFC5730}}. A server must then
+await for authorization as set out by the registry lock contact parameters
+provided. If the command is authorized within the specified deadline a server
+MUST send a poll message indicating the successfull transform.
+
+Example poll message indicating success:
+
+~~~~~~~~~~
+S:<?xml version="1.0" encoding="UTF-8"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:      <result code="1301">
+S:         <msg lang="en-US">
+S:             Command completed successfully; ack to dequeue
+S:         </msg>
+S:      </result>
+S:      <msgQ id="201" count="1">
+S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
+S:         <msg>Setting registry lock on domain succeeded.</msg>
+S:      </msgQ>
+S:    <resData>
+S:      <regLock:infData xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:        <regLock:domain>example.com</regLock:domain>
+S:        <regLock:operation success="true">update</regLock:operation>
+S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
+S:        <regLock:approvedBy>
+S:          <regLock:contact>
+S:             <regLock:id>rl01</regLock:id>
+S:          </regLock:contact>
+S:        </regLock:approvedBy>
+S:      </regLock:pollInfo>
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>54321-XYZ</svTRID>
+S:    </trID>
+S:   </response>
+S:</epp>
+~~~~~~~~~~
+
+If a transform is not authorized within the deadline a server MUST send
+a poll message indicating the failure of the transform.
+
+Example poll message indicating failure:
+
+~~~~~~~~~~
+S:<?xml version="1.0" encoding="UTF-8"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:      <result code="1301">
+S:         <msg lang="en-US">
+S:             Command completed successfully; ack to dequeue
+S:         </msg>
+S:      </result>
+S:      <msgQ id="201" count="1">
+S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
+S:         <msg>Update of locked domain failed.</msg>
+S:      </msgQ>
+S:    <resData>
+S:      <regLock:infData xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:        <regLock:domain>example.com</regLock:domain>
+S:        <regLock:operation success="false">update</regLock:operation>
+S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
+S:        </regLock:approvedBy>
+S:      </regLock:pollInfo>
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>54321-XYZ</svTRID>
+S:    </trID>
+S:   </response>
+S:</epp>
+~~~~~~~~~~
+
+### Handling changes to an associated contact object
+
+If an update command for a contact object associated with a locked domain
+is processed successfully, a server MUST respond with a result code of 1001
+as defined in section 3  of {{!RFC5730}}, to indicate that the transform is
+awaiting authorization to be completed. If a transform command is authorized
+within the specified deadline a server MUST send a poll message indicating
+the successfull transform.
+
+Example poll message indicating success:
+
+~~~~~~~~~~
+S:<?xml version="1.0" encoding="UTF-8"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:      <result code="1301">
+S:         <msg lang="en-US">
+S:             Command completed successfully; ack to dequeue
+S:         </msg>
+S:      </result>
+S:      <msgQ id="201" count="1">
+S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
+S:         <msg>Update of contact succeeded.</msg>
+S:      </msgQ>
+S:    <resData>
+S:      <regLock:infData xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:        <regLock:domain>example.com</regLock:domain>
+S:        <regLock:operation success="true">update</regLock:operation>
+S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
+S:        <regLock:approvedBy>
+S:          <regLock:contact>
+S:             <regLock:id>rl01</regLock:id>
+S:          </regLock:contact>
+S:        </regLock:approvedBy>
+S:      </regLock:pollInfo>
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>54321-XYZ</svTRID>
+S:    </trID>
+S:   </response>
+S:</epp>
+~~~~~~~~~~
+
+If setting the lock is not authorized within the deadline a server MUST send
+a poll message indicating the failure of the transform.
+
+Example poll message indicating failure:
+
+~~~~~~~~~~
+S:<?xml version="1.0" encoding="UTF-8"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <response>
+S:      <result code="1301">
+S:         <msg lang="en-US">
+S:             Command completed successfully; ack to dequeue
+S:         </msg>
+S:      </result>
+S:      <msgQ id="201" count="1">
+S:         <qDate>2013-10-22T14:25:57.0Z</qDate>
+S:         <msg>Setting registry lock failed.</msg>
+S:      </msgQ>
+S:    <resData>
+S:      <regLock:infData xmlns:regLock="urn:ietf:params:xml:ns:regLock-1.0">
+S:        <regLock:domain>example.com</regLock:domain>
+S:        <regLock:operation success="false">update</regLock:operation>
+S:        <regLock:svTRID>12345-XYZ</regLock:svTRID>
+S:        </regLock:approvedBy>
+S:      </regLock:pollInfo>
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>54321-XYZ</svTRID>
+S:    </trID>
+S:   </response>
+S:</epp>
+~~~~~~~~~~
+
 ### Handling changes to a locked domain
 
 If an update command for a locked domain is processed successfully,
