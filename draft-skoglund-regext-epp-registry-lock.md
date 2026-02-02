@@ -12,6 +12,11 @@ author:
     name: Eric Skoglund
     organization: The Swedish Internet Foundation
     email: eric.skoglund@internetstiftelsen.se
+-
+    ins: S. Kämpf
+    name: Sascha Kämpf
+    organization: DENIC
+    email: kaempf@denic.de
 
 normative:
 
@@ -65,6 +70,9 @@ While a domain that has registry lock enabled on it needs authorization
 for any changes made to it a registry MAY allow changes bypassing the
 authorization via automated DNSSEC provisioning, for example using
 a CDSS/CSYNC scanner.
+
+The removal of a registry lock is a manual, operational procedure and
+is not coveredd in this specification.
 
 In this document, we define an EPP extension that enables registries and
 registrars to further automate the registry lock process.
